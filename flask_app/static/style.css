@@ -1,0 +1,86 @@
+body {
+    margin: 0;
+    font-family: "Segoe UI", sans-serif;
+    background: radial-gradient(circle at top, #0a1a3a, #020617);
+    color: #fff;
+}
+
+.container {
+    max-width: 700px;
+    margin: 60px auto;
+    padding: 20px;
+    text-align: center;
+}
+
+h1 {
+    font-size: 2.5rem;
+}
+
+.subtitle {
+    color: #9bb3ff;
+    margin-bottom: 30px;
+}
+
+.card {
+    background: rgba(255,255,255,0.05);
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 0 40px rgba(0,0,0,0.5);
+}
+
+input[type="file"],
+textarea {
+    width: 100%;
+    margin: 15px 0;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    background: #0f1f4d;
+    color: white;
+}
+
+textarea {
+    height: 160px;
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    border-radius: 10px;
+    border: none;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    background: linear-gradient(135deg, #00e5a8, #1fa2ff);
+    color: black;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+.results {
+    margin-top: 30px;
+    text-align: left;
+}
+
+.hidden {
+    display: none;
+}
+
+.log {
+    padding: 10px;
+    margin: 8px 0;
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+.normal {
+    background: rgba(0, 255, 170, 0.15);
+    border-left: 5px solid #00e5a8;
+}
+
+.anomaly {
+    background: rgba(255, 60, 60, 0.15);
+    border-left: 5px solid #ff3c3c;
+}

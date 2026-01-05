@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Log Anomaly Detection</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="container">
+    <h1>Log Anomaly Detection</h1>
+    <p class="subtitle">AI-powered security log analysis (SOC-grade)</p>
+
+    <div class="card">
+        <form id="logForm">
+            <input type="file" id="logfile">
+            <textarea id="logcontent" placeholder="Paste log entries here..."></textarea>
+            <button type="submit">Analyze Logs</button>
+        </form>
+    </div>
+
+    <div id="results" class="results hidden">
+        <h2>Analysis Results</h2>
+        <div id="output"></div>
+    </div>
+</div>
+
+<script>
+document.getElementById('logForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    let fd = new FormData();
+    let file = document.getElementById('logfile').files[0];
+    let text = document.getElementById('logcontent').value.trim();
+
+    if (file) fd.append('logfile', file);
+    else if (text) fd.append('logcontent', text);
+    else {
+        alert("Provide logs");
+        return;
+    }
+
+    const res = await fetch('/predict', {
+        method: 'POST',
+        body: fd
+    });
+
+    const data = await res.json();
+    let html = "";
+
+    data.predictions.forEach((r, i) => {
+
+        let cls = "anomaly";
+        let icon = "❌";
+
+        if (r.status === "Normal") {
+            cls = "normal";
+            icon = "✔️";
+        } 
+        else if (r.status === "Rejected") {
+            cls = "rejected";
+            icon = "⛔";
+        }
+
+        html += `
+            <div class="log ${cls}">
+                ${icon} <strong>Log ${i + 1}: ${r.status}</strong><br>
+                <code>${r.log}</code><br>
+                🌐 Protocol: ${r.protocol}<br>
+                🔍 Reason: ${r.reason}<br>
+                📊 Confidence: ${r.confidence}%
+            </div>
+        `;
+    });
+
+    document.getElementById('output').innerHTML = html;
+    document.getElementById('results').classList.remove('hidden');
+});
+</script>
+
+</body>
+</html>
