@@ -1,188 +1,130 @@
-WebLogAnalysis — SOC-Grade Log Anomaly Detection
+# 🔐 Web Log Anomaly Detection (SOC-Grade)
 
-WebLogAnalysis is a SOC-grade web log analysis system that detects malicious, suspicious, rejected, and legitimate web access logs using a combination of:
+An AI-powered **SOC-style Web Log Anomaly Detection System** that analyzes HTTP access logs using a **hybrid detection approach** combining **unsupervised machine learning** and **rule-based security heuristics**.
 
-Unsupervised Machine Learning
+This project simulates how modern **Security Operations Centers (SOC)** detect suspicious web activity, enrich alerts with context, and assign confidence scores for analyst decision-making.
 
-Rule-based security validation
+---
 
-HTTP-aware log analysis
+## 👤 Author
 
-Explainability (reason + confidence)
+**Saumya Singh**  
+Cybersecurity & SOC Enthusiast  
+GitHub: https://github.com/saumyabhandarii
 
-Analyst-friendly web UI
+---
 
-This project follows real-world SOC / SIEM architecture principles, where ML is used only for anomaly detection, while rules provide validation, explainability, and trust.
+## 🎯 Project Objectives
 
-🔐 Key Features (What Makes This SOC-Grade)
-1️⃣ Hybrid Detection Architecture
+- Detect anomalous and malicious web requests from access logs  
+- Mimic real-world **SIEM / SOC detection pipelines**
+- Combine **ML-based anomaly detection** with **security rules**
+- Provide **explainable alerts** with reasons and confidence levels
+- Build a **resume-worthy cybersecurity project**
 
-Machine Learning (Isolation Forest, LOF, One-Class SVM)
-→ Used strictly for anomaly detection
+---
 
-Rule-based engine
-→ Used for validation, explanation, and confidence scoring
+---
 
-ML feature space is kept exactly the same as training time to avoid model drift.
+## 🧠 Detection Techniques Used
 
-2️⃣ Rule-Based Validation (Input Hygiene)
+### 🔹 Machine Learning (Unsupervised)
+- Isolation Forest
+- Local Outlier Factor (LOF)
+- One-Class SVM
+- TF-IDF Vectorization for log text
 
-Invalid logs such as:
+### 🔹 Rule-Based Security Logic
+- Sensitive endpoint access (`/admin`, `/login`, `/wp-admin`)
+- Path traversal attempts (`../`)
+- High-risk HTTP methods (`POST`, `PUT`, `DELETE`)
+- Error response patterns (`4xx`, `5xx`)
+- Invalid or malformed log rejection
 
-aaa
-abcde
-randomtext
+---
 
+## 📊 Output Format (SOC-Style)
 
-are not silently dropped
+Each log entry is classified with:
+- **Status**: Normal / Anomaly / Rejected
+- **Protocol**: HTTP / HTTPS
+- **Reason**: Human-readable explanation
+- **Confidence Score**: Percentage likelihood of malicious behavior
 
-They are explicitly marked as:
+---
 
-Status: Rejected
-Reason: Invalid or unsupported log format
-Confidence: 100%
+## 🖥️ Tech Stack
 
+- **Backend**: Python, Flask
+- **ML Stack**: scikit-learn, NumPy, joblib
+- **Frontend**: HTML, CSS (Dark SOC-style UI)
+- **Models**: Pre-trained `.pkl` models
+- **Environment**: Python Virtual Environment
 
-This mirrors real SOC / SIEM behavior.
+---
 
-3️⃣ HTTP-Aware Analysis (Without Breaking ML)
+## 🚀 How to Run the Project
 
-The system extracts (for rules only):
+### 1️⃣ Clone the Repository
+```bash
+git clone https://github.com/saumyabhandarii/Web-Log-Analysis.git
+cd Web-Log-Analysis
+2️⃣ Create & Activate Virtual Environment
+python -m venv .venv
+.venv\Scripts\activate
 
-HTTP Method (GET / POST / PUT / DELETE)
-
-Path (/admin, /login, /wp-admin, etc.)
-
-Status codes (401, 403, 500)
-
-Protocol (HTTP / HTTPS)
-
-These fields are NOT fed into ML, but are used for:
-
-Reason tagging
-
-Confidence scoring
-
-Analyst explanations
-
-4️⃣ Explainable Results (Analyst-Friendly)
-
-Every log displayed in the UI includes:
-
-Status: Normal | Anomaly | Rejected
-
-Reason (e.g. Sensitive endpoint access)
-
-Confidence score (dynamic, not hardcoded)
-
-Protocol (HTTP / HTTPS)
-
-No “black-box” output.
-
-5️⃣ File Upload Support (Production-Safe)
-
-Supports .log and .txt files
-
-Handles UTF-8 and Latin-1 encoding
-
-Prevents crashes due to binary or mis-encoded files
-
-Mirrors real log ingestion pipelines
-
-6️⃣ Web UI (SOC-Style)
-
-Paste logs or upload files
-
-Color-coded results:
-
-✅ Normal
-
-❌ Anomaly
-
-⛔ Rejected
-
-Clear visibility — no hidden logs
-🚀 Getting Started
-Prerequisites
-
-Python 3.8+
-
-pip
-
-Virtual environment (recommended)
-
-Installation
-
-cd WebLogAnalysis
-python -m venv venv
-venv\Scripts\activate   # Windows
+3️⃣ Install Dependencies
 pip install -r requirements.txt
 
-▶️ Running the Application
-Start the Flask App
+4️⃣ Run Flask App
 cd flask_app
 python app.py
 
+5️⃣ Open in Browser
+http://127.0.0.1:5000/
 
-Open browser:
+🧪 Sample Log Input
+127.0.0.1 - - [10/Oct/2025:13:55:36 +0000] "GET /index.html HTTP/1.1" 200
+192.168.1.10 - - [10/Oct/2025:13:56:01 +0000] "POST /login HTTP/1.1" 401
+203.0.113.5 - - [10/Oct/2025:13:57:15 +0000] "GET /admin HTTP/1.1" 403
+198.51.100.23 - - [10/Oct/2025:13:58:42 +0000] "GET /../../etc/passwd HTTP/1.1" 404
 
-http://127.0.0.1:5000
+⚠️ Notes on Model Versions
 
-🧪 Example Inputs & Outputs
-Invalid Input
-abcde
+Models were trained using scikit-learn 1.6.0
 
+Running on newer versions may show warnings but functionality remains intact
 
-Output:
+For full compatibility:
 
-Status: Rejected
-Reason: Invalid or unsupported log format
-Confidence: 100%
+pip install scikit-learn==1.6.0
 
-Suspicious Access
-203.0.113.10 - - [10/Oct/2024:14:10:01] "GET /admin HTTP/1.1" 403
+🔮 Future Enhancements
 
+Severity levels (LOW / MEDIUM / HIGH)
 
-Output:
+MITRE ATT&CK technique mapping
 
-Status: Anomaly
-Reason: Sensitive endpoint access, Error response pattern
-Confidence: High (dynamic)
+Alert deduplication & incident grouping
 
-Normal Access
-203.0.113.10 - - [10/Oct/2024:14:10:03] "GET /index.html HTTP/1.1" 200
+CSV / JSON export for SOC reporting
 
+Baseline learning to reduce false positives
 
-Output:
+Dashboard analytics & charts
 
-Status: Normal
-Confidence: Low
+📌 Why This Project Matters
 
-🧠 Design Philosophy (Important)
+This project demonstrates:
 
-ML is not trusted blindly.
-ML detects anomalies.
-Rules explain them.
-UI shows everything.
+Real SOC detection logic
 
-This design aligns with:
+Hybrid ML + rule-based security design
 
-SOC analyst workflows
+Explainable anomaly detection
 
-SIEM platforms (Splunk, Elastic, QRadar)
+Practical cybersecurity engineering skills
 
-Interview expectations for security roles
+It is not a toy project — it reflects real-world SOC workflows.
+## 🏗️ Architecture Overview
 
-🧩 Future Enhancements
-
-Severity levels (Low / Medium / High / Critical)
-
-MITRE ATT&CK mapping
-
-IP reputation scoring
-
-Alert aggregation
-
-CSV / JSON export
-
-Dashboard metrics
